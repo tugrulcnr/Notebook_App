@@ -1,12 +1,11 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:notebook/costom/elevation_button_widget.dart';
 import 'package:notebook/storeData.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'costom/textfiel_widget.dart';
 
+// ignore: must_be_immutable
 class DetailsView extends StatefulWidget {
   DetailsView(this.index, {super.key});
   List<String>? localTopicTexts;
@@ -61,7 +60,9 @@ class _DetailsViewState extends State<DetailsView> with ProjectString{
 
           widget.localMesageTexts?[widget.index] = messageController.text;
           storeData.saveData(KeyNames.mesaj, widget.localMesageTexts ?? []);
-          //       inspect(mesajTexts);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Not Güncellendi"),
+          ));
         }, bottomText: "Güncelle",
       ),
       appBar: const MyAppBar(),
@@ -76,7 +77,7 @@ class _DetailsViewState extends State<DetailsView> with ProjectString{
         TextFieldWidget(
           text: subTitleHint,
           size: 20,
-          maxLineSize: 10,
+          maxLineSize: 25,
           textController: messageController,
         ),
       ]),
@@ -92,6 +93,7 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      title: Text("Notu Güncelle",style: TextStyle(color: Theme.of(context).colorScheme.error),),
       elevation: 0,
       backgroundColor: Colors.white,
       leading: InkWell(

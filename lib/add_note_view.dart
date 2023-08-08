@@ -1,12 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:notebook/storeData.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'costom/elevation_button_widget.dart';
 import 'costom/textfiel_widget.dart';
 
+// ignore: must_be_immutable
 class AddNoteView extends StatefulWidget {
   AddNoteView({super.key});
   List<String>? localTopicTexts;
@@ -22,50 +21,39 @@ class _AddNoteViewState extends State<AddNoteView> {
   // ignore: prefer_typing_uninitialized_variables
 
   var storeData = StoreDate();
-  List<String>? topicTexts ;
-  List<String>? mesajTexts ;
-
-  
+  List<String>? topicTexts;
+  List<String>? mesajTexts;
 
   @override
   void initState() {
     super.initState();
-   
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       topicTexts = await storeData.getStoreData(KeyNames.topics);
       widget.localTopicTexts = topicTexts;
 
-
       mesajTexts = await storeData.getStoreData(KeyNames.mesaj);
       widget.localMesageTexts = mesajTexts;
-
     });
-
-   
-
-
-
   }
-
-
- 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const MyAppBar(),
       floatingActionButton: MyButtonWidget(
         onPressed: () async {
-
           widget.localTopicTexts?.add(topicController.text);
           storeData.saveData(KeyNames.topics, widget.localTopicTexts ?? []);
-
           widget.localMesageTexts?.add(messageController.text);
           storeData.saveData(KeyNames.mesaj, widget.localMesageTexts ?? []);
 
-        }, bottomText: "Kaydet",
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Yeni Not eklendi"),
+          ));
+        },
+        bottomText: "Kaydet",
       ),
-      appBar: const MyAppBar(),
       body: Column(mainAxisSize: MainAxisSize.min, children: [
         TextFieldWidget(
           text: 'Başlık',
@@ -77,7 +65,7 @@ class _AddNoteViewState extends State<AddNoteView> {
         TextFieldWidget(
           text: 'Yazmaya başla',
           size: 20,
-          maxLineSize: 10,
+          maxLineSize: 25,
           textController: messageController,
         ),
       ]),
@@ -93,11 +81,15 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      title: Text(
+        "Yeni Not Ekle",
+        style: TextStyle(color: Theme.of(context).colorScheme.error),
+      ),
       elevation: 0,
       backgroundColor: Colors.white,
       leading: InkWell(
           onTap: () {
-            Navigator.pop(context,true);
+            Navigator.pop(context, true);
           },
           child: const Icon(
             Icons.arrow_back,
@@ -109,6 +101,3 @@ class MyAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
-
-
-

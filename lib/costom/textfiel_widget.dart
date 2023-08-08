@@ -12,6 +12,7 @@ class TextFieldWidget extends StatelessWidget {
   final String text;
   final double size;
   final int maxLineSize;
+  // ignore: prefer_typing_uninitialized_variables
   final textController;
 
   @override
